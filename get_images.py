@@ -77,14 +77,14 @@ class BirdImageDownloader(BirdDownloader):
 
 
 if __name__ == '__main__':
-    df = pd.read_excel('C:\\Users\\chave\\Downloads\\aves-de-cota-observadas.xlsx', header=1)
+    df = pd.read_excel('./aves-de-cota-observadas.xlsx', header=1)
     df = df.head(10)
     
     bid = BirdImageDownloader('./bird_images')
     for r in df.iterrows():
         bird = r[1]['Especie']
         print('bird: ', bird)
-        bid.get_images_of_bird(bird, show=False)
+        bid.get_data(bird)
         
         print(bid.bird_data.keys())
         
