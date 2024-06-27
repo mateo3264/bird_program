@@ -27,8 +27,3 @@ def difuminate(text, rate_of_difumination=1):
     return difuminations
 
 
-
-pajaro = 'Zonotrichia capensis'
-print(difuminate(pajaro))
-print(difuminate(pajaro, 2))
-
