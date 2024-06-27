@@ -32,7 +32,7 @@ class BirdDownloader(ABC):
 
 class BirdAudioDownloader(BirdDownloader):
     def get_data(self, bird, limit=5):
-        bird_name = bird.lower().replace(' ', '%20')
+        bird_name = bird.lower().strip().replace(' ', '%20')
         url = 'https://xeno-canto.org/explore?query=' + bird_name
         
         response = requests.get(url)
@@ -50,7 +50,7 @@ class BirdAudioDownloader(BirdDownloader):
         audio_counter = 0
         for i, audio_src in enumerate(audio_srcs):
             audio_content = requests.get('https:' + audio_src).content
-            
+            print(audio_src)
             bird = bird.lower().replace(' ', '-')
             
             if bird not in self.bird_data:
@@ -62,6 +62,9 @@ class BirdAudioDownloader(BirdDownloader):
             if limit is not None:
                 if audio_counter >= limit:
                     break
+        
+        if bird not in self.bird_data:
+            print(f'Warning: Unsplash doesnt have {bird} images')
 
     
             # with open('./{}{}.mp3'.format(bird_name.replace('%20', '_'), i), 'wb') as f:
@@ -71,7 +74,7 @@ class BirdImageDownloader(BirdDownloader):
         
     def get_data(self, bird, show=False, limit=None):
         
-        bird = bird.lower().replace(' ', '-')
+        bird = bird.lower().strip().replace(' ', '-')
         print(bird)
         url = 'https://unsplash.com/es/s/fotos/' + bird
 
@@ -108,6 +111,9 @@ class BirdImageDownloader(BirdDownloader):
                         plt.show()
             except Exception as e:
                 pass
+        
+        if bird not in self.bird_data:
+            print(f'Warning: Unsplash doesnt have {bird} images')
             
         
 
