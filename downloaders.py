@@ -114,31 +114,7 @@ class BirdImageDownloader(BirdDownloader):
         
         if bird not in self.bird_data:
             print(f'Warning: Unsplash doesnt have {bird} images')
-            
         
-
-                
-            
-
-
-
-if __name__ == '__main__':
-    df = pd.read_excel('./aves-de-cota-observadas.xlsx', header=1)
-    df = df.head(1)
-    
-    bid = BirdImageDownloader('./bird_images')
-    bad = BirdAudioDownloader('./bird_audios')
-    for r in df.iterrows():
-        bird = r[1]['Especie']
-        print('bird: ', bird)
-        bid.get_data(bird, limit=3)
-        bad.get_data(bird, limit=3)
-        
-    print('# of elements in audio bird data: ', len(bad.bird_data))
-    print([type(v) for v in bad.bird_data.values()])
-    print('END OF GETTING IMAGES')
-    bid.save_data(format='jpg')
-    bad.save_data(format='mp3')
     
     
 
