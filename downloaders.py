@@ -3,9 +3,11 @@ from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
 import matplotlib.pyplot as plt
-import pandas as pd
 import os
 from abc import ABC, abstractmethod
+from registers import write_data_downloaded
+from configurations import DIRNAME_BIRD_AUDIOS, DIRNAME_BIRD_IMAGES
+
 
 class BirdDownloader(ABC):
     def __init__(self, path):
@@ -28,6 +30,12 @@ class BirdDownloader(ABC):
                     print(filename)
                     
                     f.write(data_content)
+        
+        if format == 'jpg':
+            write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'image')
+        elif format == 'mp3':
+            write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'audio')
+
 
 
 class BirdAudioDownloader(BirdDownloader):
@@ -116,6 +124,12 @@ class BirdImageDownloader(BirdDownloader):
             print(f'Warning: Unsplash doesnt have {bird} images')
         
     
-    
+bad = BirdAudioDownloader(DIRNAME_BIRD_AUDIOS)
+bid = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
+
+bad.get_data('turdus fuscater')
+bad.save_data('mp3')
+bid.get_data('turdus fuscater')
+bid.save_data('jpg')
 
 
