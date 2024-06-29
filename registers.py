@@ -51,7 +51,6 @@ def delete_files(bird_name, data_type):
         
         os.remove(FILENAME_BIRD_IMAGES)
 
-delete_files('turdus fuscater', 'image')
 
 
     

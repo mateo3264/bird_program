@@ -123,13 +123,6 @@ class BirdImageDownloader(BirdDownloader):
         if bird not in self.bird_data:
             print(f'Warning: Unsplash doesnt have {bird} images')
         
-    
-bad = BirdAudioDownloader(DIRNAME_BIRD_AUDIOS)
-bid = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
 
-bad.get_data('turdus fuscater')
-bad.save_data('mp3')
-bid.get_data('turdus fuscater')
-bid.save_data('jpg')
 
 
