@@ -5,8 +5,27 @@ from configurations import (
     FILENAME_BIRD_AUDIOS, 
     FILENAME_BIRD_IMAGES,
     DIRNAME_BIRD_AUDIOS,
-    DIRNAME_BIRD_IMAGES
+    DIRNAME_BIRD_IMAGES,
+    ALL_BIRDS
 )
+import csv
+
+def read_json_file(filename):
+    with open(filename, 'r') as file:
+        json_file = json.load(file)
+        return json_file
+
+def read_bird_names():
+    birds = []
+
+    with open(ALL_BIRDS, 'r') as f:
+        reader = csv.DictReader(f)
+        
+        for row in reader:
+            
+            birds.append(row['Especie'])
+    
+    return birds
 
 
 def write_data_downloaded(bird_name, n_data_examples, data_type):
@@ -20,9 +39,8 @@ def write_data_downloaded(bird_name, n_data_examples, data_type):
     if not os.path.isfile(filename):
         with open(filename, 'w') as file:
             json.dump({}, file)
-    with open(filename, 'r') as file:
-            json_file = json.load(file)
-
+    
+    json_file = read_json_file(filename)
 
     if bird_name in json_file:
         json_file[bird_name] += n_data_examples
@@ -33,6 +51,7 @@ def write_data_downloaded(bird_name, n_data_examples, data_type):
     
     with open(filename, 'w') as file:
         json.dump(json_file, file)
+
 
 def delete_files(bird_name, data_type):
     bird_name = format_name_for_save(bird_name)
@@ -51,6 +70,13 @@ def delete_files(bird_name, data_type):
         
         os.remove(FILENAME_BIRD_IMAGES)
 
+
+if __name__ == '__main__':
+    for i, bird in enumerate(read_bird_names()):
+        print(i, bird)
+
+        if i == 5:
+            break
 
 
     

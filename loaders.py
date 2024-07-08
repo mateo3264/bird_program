@@ -1,14 +1,18 @@
 import json
 import os
 from formatters import format_name_for_save
-from configurations import DIRNAME_BIRD_IMAGES, DIRNAME_BIRD_AUDIOS
+from configurations import (
+    DIRNAME_BIRD_IMAGES, 
+    DIRNAME_BIRD_AUDIOS,
+    FILENAME_BIRD_IMAGES
+)
 from PIL import Image
 import pygame
 import pygame as pg
+from registers import read_json_file
+from downloaders import BirdAudioDownloader, BirdImageDownloader
 
-
-def get_data(bird_name, data_type):
-    bird_name = format_name_for_save(bird_name)
+def get_from_downloaded(bird_name, data_type):
     data = []
 
     if data_type == 'audio':
@@ -24,8 +28,28 @@ def get_data(bird_name, data_type):
             
             datapoint = full_path
         elif data_type == 'image':
-            datapoint = Image.open(full_path)
+            datapoint = full_path
+        if bird_name in datapoint:
+            data.append(datapoint)
+    
+    return data
 
-        data.append(datapoint)
+# ToDo: If bird_name exists (as img or audio) get it, else download and get it
+def get_data(bird_name, data_type):
+    original_bird_name = bird_name
+    
+    bird_name = format_name_for_save(bird_name)
+    
+    #print('DIRNAME_BIRD_IMAGES', DIRNAME_BIRD_IMAGES)
+    json_file = read_json_file(FILENAME_BIRD_IMAGES)
+
+    if bird_name not in json_file:
+        print('bird not in local memory')
+        bid = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
+        bid.get_data(original_bird_name)
+        print('THE BIRD DATA BABY: ', bid.bird_data.keys())
+        bid.save_data('jpg')
+    
+    data = get_from_downloaded(bird_name, data_type)
     
     return data
