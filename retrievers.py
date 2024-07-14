@@ -4,12 +4,12 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import random
 from schedulers import get_birds_by_string_length
-
+from configurations import IMAGE, AUDIO, IMAGE_AUDIO
 
 class Retriever:
     def __init__(self, birds, how):
         """Present an image, audio or image and audio
-        The how parameter receives 'image', 'audio' or 'image-audio'"""
+        The how parameter receives IMAGE, 'audio' or 'image-audio'"""
 
         self.birds = birds
         self.images = {bird:[] for bird in birds}
@@ -29,24 +29,24 @@ class Retriever:
         
         for bird_name in birds:
                 print(bird_name)
-                if self.how == 'image' or self.how == 'image-audio':
-                    self.get_data_filenames(bird_name, 'image')
-                if self.how == 'audio' or self.how == 'image-audio':
-                    self.get_data_filenames(bird_name, 'audio')
+                if self.how == IMAGE or self.how == IMAGE_AUDIO:
+                    self.get_data_filenames(bird_name, IMAGE)
+                if self.how == AUDIO or self.how == IMAGE_AUDIO:
+                    self.get_data_filenames(bird_name, AUDIO)
         #self.url2obj()
         
         print(self.image_filenames)
 
     def get_data_filenames(self, bird_name, data_type):
         """Get the data by calling loaders.get_data()"""
-        if self.how == 'image' or self.how == 'image-audio':
-            self.image_filenames[bird_name] = loaders.get_data(bird_name, 'image')
+        if self.how == IMAGE or self.how == IMAGE_AUDIO:
+            self.image_filenames[bird_name] = loaders.get_data(bird_name, IMAGE)
             print('image filenames key and value')
             print(bird_name, self.image_filenames[bird_name])
-        if self.how == 'audio' or self.how == 'image-audio':
+        if self.how == AUDIO or self.how == IMAGE_AUDIO:
             print('RETRIEVER AUDIO')
-            self.audio_filenames[bird_name] = loaders.get_data(bird_name, 'audio')
-            #self.audio_filenames.extend(loaders.get_data(bird_name, 'audio'))
+            self.audio_filenames[bird_name] = loaders.get_data(bird_name, AUDIO)
+            #self.audio_filenames.extend(loaders.get_data(bird_name, AUDIO))
         
         return True
 

@@ -6,7 +6,9 @@ from configurations import (
     FILENAME_BIRD_IMAGES,
     DIRNAME_BIRD_AUDIOS,
     DIRNAME_BIRD_IMAGES,
-    ALL_BIRDS
+    ALL_BIRDS,
+    IMAGE,
+    AUDIO
 )
 import csv
 
@@ -31,9 +33,9 @@ def read_bird_names():
 def write_data_downloaded(bird_name, n_data_examples, data_type):
     bird_name = format_name_for_save(bird_name)
     
-    if data_type == 'image':
+    if data_type == IMAGE:
         filename = FILENAME_BIRD_IMAGES
-    elif data_type == 'audio':
+    elif data_type == AUDIO:
         filename = FILENAME_BIRD_AUDIOS
 
     if not os.path.isfile(filename):
@@ -56,14 +58,14 @@ def write_data_downloaded(bird_name, n_data_examples, data_type):
 def delete_files(bird_name, data_type):
     bird_name = format_name_for_save(bird_name)
     
-    if data_type == 'audio': 
+    if data_type == AUDIO: 
         for f in os.listdir(DIRNAME_BIRD_AUDIOS):
             if bird_name in f:                
                 os.remove(os.path.join(DIRNAME_BIRD_AUDIOS, f))
         
         os.remove(FILENAME_BIRD_AUDIOS)
 
-    elif data_type == 'image': 
+    elif data_type == IMAGE: 
         for f in os.listdir(DIRNAME_BIRD_IMAGES):
             if bird_name in f: 
                 os.remove(os.path.join(DIRNAME_BIRD_IMAGES, f))

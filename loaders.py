@@ -5,7 +5,9 @@ from configurations import (
     DIRNAME_BIRD_IMAGES, 
     DIRNAME_BIRD_AUDIOS,
     FILENAME_BIRD_IMAGES,
-    FILENAME_BIRD_AUDIOS
+    FILENAME_BIRD_AUDIOS,
+    IMAGE,
+    AUDIO
 )
 from PIL import Image
 import pygame
@@ -16,19 +18,19 @@ from downloaders import BirdAudioDownloader, BirdImageDownloader
 def get_from_downloaded(bird_name, data_type):
     data = []
 
-    if data_type == 'audio':
+    if data_type == AUDIO:
         dire = DIRNAME_BIRD_AUDIOS
         pygame.mixer.init()
-    elif data_type == 'image':
+    elif data_type == IMAGE:
         dire = DIRNAME_BIRD_IMAGES
 
     for f in os.listdir(dire):
         full_path = os.path.join(dire, f)
     
-        if data_type == 'audio':
+        if data_type == AUDIO:
             
             datapoint = full_path
-        elif data_type == 'image':
+        elif data_type == IMAGE:
             datapoint = full_path
         if bird_name in datapoint:
             data.append(datapoint)
@@ -38,11 +40,11 @@ def get_from_downloaded(bird_name, data_type):
 def download_and_save_data(original_bird_name, data_type):
     print(f'bird: {original_bird_name} filename with format {data_type} not in local memory')
     
-    if data_type == 'image':
+    if data_type == IMAGE:
         format = 'jpg'
         bird_downloader = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
         bird_downloader.get_data(original_bird_name)
-    elif data_type == 'audio':
+    elif data_type == AUDIO:
         format = 'mp3'
         bird_downloader = BirdAudioDownloader(DIRNAME_BIRD_AUDIOS)
         bird_downloader.get_data(original_bird_name)
@@ -59,10 +61,10 @@ def get_data(bird_name, data_type):
     bird_name = format_name_for_save(bird_name)
     
     #print('DIRNAME_BIRD_IMAGES', DIRNAME_BIRD_IMAGES)
-    if data_type == 'image':
+    if data_type == IMAGE:
         json_file = read_json_file(FILENAME_BIRD_IMAGES)
         
-    elif data_type == 'audio':
+    elif data_type == AUDIO:
         json_file = read_json_file(FILENAME_BIRD_AUDIOS)
         
     print(f'file: loaders.py, line 68, json_file: {json_file}')
