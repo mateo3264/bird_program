@@ -13,8 +13,11 @@ class TkinterGUI(Presenter):
         self.label_bird_name = tk.Label(
             self.root, 
             text=self.tp.text_stimulus[self.tp.cur_bird][self.tp.cur_bird_text_idx],
-            font=('Courier', 30)
+            font=('Courier', 30),
+            state='active'
             )
+
+        
         
         self.label_consequence = tk.Label(
             self.root, 
@@ -25,7 +28,7 @@ class TkinterGUI(Presenter):
         self.insect_image = insect_image.resize(size=(64, 64))
         self.insect_image = ImageTk.PhotoImage(self.insect_image)
         self.button_food = tk.Button(self.root, image=self.insect_image)
-        self.button_food.pack()
+        self.button_show_bird_name = tk.Button(self.root, text="show bird's name", command=self.show_birds_name)
         self.get_image(self.tp.image_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx], True)
         print('self.cur_bird: ', self.tp.cur_bird)
         print('self.cur_bird_image_idx: ', self.tp.cur_bird_image_idx)
@@ -35,15 +38,24 @@ class TkinterGUI(Presenter):
             font=('Courier', 40)
             )
         self.button = tk.Button(self.root, text='Send', command=self.get_entry)
+
+
+
         self.label_bird_name.pack()
+        self.label_bird_name.pack_forget()
+        self.button_show_bird_name.pack()
         self.label_consequence.pack()
         # self.image.pack()
         self.label_image.pack()
         self.entry.pack()
         self.entry.focus()
         self.button.pack()
+        self.button_food.pack()
         # self.root.withdraw()
         self.root.mainloop()
+
+    def show_birds_name(self):
+        self.label_bird_name.pack()
 
     def get_audio(self, audio_filename):
         pg.mixer.init()
@@ -75,7 +87,8 @@ class TkinterGUI(Presenter):
         self.entry.delete(0, 'end')
         self.entry.focus()
             
-    def update_media(self):        
+    def update_media(self): 
+        self.label_bird_name.pack_forget()       
         self.label_bird_name.config(text=self.tp.text_stimulus[self.tp.cur_bird][self.tp.cur_bird_text_idx])
         self.get_image(self.tp.image_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])
         self.get_audio(self.tp.audio_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])
