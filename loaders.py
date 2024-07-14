@@ -4,7 +4,8 @@ from formatters import format_name_for_save
 from configurations import (
     DIRNAME_BIRD_IMAGES, 
     DIRNAME_BIRD_AUDIOS,
-    FILENAME_BIRD_IMAGES
+    FILENAME_BIRD_IMAGES,
+    FILENAME_BIRD_AUDIOS
 )
 from PIL import Image
 import pygame
@@ -34,21 +35,40 @@ def get_from_downloaded(bird_name, data_type):
     
     return data
 
+def download_and_save_data(original_bird_name, data_type):
+    print(f'bird: {original_bird_name} filename with format {data_type} not in local memory')
+    
+    if data_type == 'image':
+        format = 'jpg'
+        bird_downloader = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
+        bird_downloader.get_data(original_bird_name)
+    elif data_type == 'audio':
+        format = 'mp3'
+        bird_downloader = BirdAudioDownloader(DIRNAME_BIRD_AUDIOS)
+        bird_downloader.get_data(original_bird_name)
+    
+    bird_downloader.save_data(format)
+
+    return True
+
 # ToDo: If bird_name exists (as img or audio) get it, else download and get it
 def get_data(bird_name, data_type):
+    print(f'file: loaders.py, line 56, data_type: {data_type}')
     original_bird_name = bird_name
     
     bird_name = format_name_for_save(bird_name)
     
     #print('DIRNAME_BIRD_IMAGES', DIRNAME_BIRD_IMAGES)
-    json_file = read_json_file(FILENAME_BIRD_IMAGES)
+    if data_type == 'image':
+        json_file = read_json_file(FILENAME_BIRD_IMAGES)
+        
+    elif data_type == 'audio':
+        json_file = read_json_file(FILENAME_BIRD_AUDIOS)
+        
+    print(f'file: loaders.py, line 68, json_file: {json_file}')
 
     if bird_name not in json_file:
-        print('bird not in local memory')
-        bid = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
-        bid.get_data(original_bird_name)
-        print('THE BIRD DATA BABY: ', bid.bird_data.keys())
-        bid.save_data('jpg')
+        download_and_save_data(original_bird_name, data_type)
     
     data = get_from_downloaded(bird_name, data_type)
     

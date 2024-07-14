@@ -124,7 +124,9 @@ class BirdDownloader(ABC):
         pass
 
     def save_data(self, format):
+        #print(f'file downloaders.py, line 127, self.bird_data {self.bird_data}')
         for bird_name in self.bird_data:
+            print(f'file downloaders.py, line 129, bird_name {bird_name}')
             for i, data_content in enumerate(self.bird_data[bird_name]):
                 filename = self.path + '\\' + bird_name + str(i) + '.' + format
                 with open(filename, 'wb') as f:
@@ -135,13 +137,15 @@ class BirdDownloader(ABC):
         if format == 'jpg':
             write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'image')
         elif format == 'mp3':
+            print('bird_name: ', bird_name)
+            print('self.bird_data: ', self.bird_data.keys())
             write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'audio')
 
 
 
 class BirdAudioDownloader(BirdDownloader):
     def get_data(self, bird, limit=5):
-        bird_name = bird.lower().strip().replace(' ', '%20')
+        bird_name = format_name_for_save(bird, '%20') #bird.lower().strip().replace(' ', '%20')
         url = 'https://xeno-canto.org/explore?query=' + bird_name
         
         response = requests.get(url)
@@ -160,7 +164,7 @@ class BirdAudioDownloader(BirdDownloader):
         for i, audio_src in enumerate(audio_srcs):
             audio_content = requests.get('https:' + audio_src).content
             print(audio_src)
-            bird = bird.lower().replace(' ', '-')
+            bird = format_name_for_save(bird)#bird.lower().replace(' ', '-')
             
             if bird not in self.bird_data:
                 self.bird_data[bird] = []
@@ -173,7 +177,8 @@ class BirdAudioDownloader(BirdDownloader):
                     break
         
         if bird not in self.bird_data:
-            print(f'Warning: Unsplash doesnt have {bird} images')
+            print(f'Warning: xeno-canto doesnt have {bird} audios')
+            self.bird_data[bird] = None
 
     
             # with open('./{}{}.mp3'.format(bird_name.replace('%20', '_'), i), 'wb') as f:
@@ -184,7 +189,7 @@ class BirdImageDownloader(BirdDownloader):
     def get_data(self, bird, show=False, limit=None):
         original_bird = bird
         #ToDo: Replace with format function 
-        bird = bird.lower().strip().replace(' ', '-')
+        bird = format_name_for_save(bird) #bird.lower().strip().replace(' ', '-')
         
         url = 'https://unsplash.com/es/s/fotos/' + bird
 

@@ -3,11 +3,11 @@ Passeriforme,Emberizidae,Zonotrichia ,Zonotrichia capensis
 Passeriforme,Turdidae,Turdus,Turdus fuscater
 Columbiformes,Columbidae,Colomba,Columba livia
 Columbiformes,Columbidae,Zenaida,Zenaida auriculata
-Passeriforme,Fringilidae,Astragalinus ,Astragalinus psaltria
+Passeriforme,Fringilidae,Spinus,Spinus psaltria
 Passeriforme,Thraupidae,Ramphocelus,Ramphocelus dimidiatus
 Passeriforme,Mimidae,Mimus,Mimus gilvus
 Passeriforme,Thraupidae,Thraupis,Thraupis episcopus
-Accipitriformes ,Accipitridae,Elanus,Elaunus leucurus
+Accipitriformes ,Accipitridae,Elanus,Elanus leucurus
 Falconiformes,Falconidae,Falco ,Falco sparverius
 Passeriforme,Cardinalidae,Pheucticus,Pheucticus aureoventris
 Passeriforme,Thraupidae,Diglossa,Diglossa humeralis
@@ -23,41 +23,41 @@ Apodiformes,Trochilidae,Eriocnemis,Eriocnemis cupreoventris
 Apodiformes,Trochilidae,Colibri,Colibri coruscans
 Apodiformes,Trochilidae,Lesbia,Lesbia nuna
 Passeriforme,Icteridae,Molothrus,Molothrus bonariensis
-Passeriforme,Hirundinidae,Notiochelidon,Notiochelidon cyanoleuca
+Passeriforme,Hirundinidae,Pygochelidon,Pygochelidon cyanoleuca
 Passeriforme,Icteridae,Icterus,Icterus chrysater
-Passeriforme,Parulidae,Basileuterus,Basileuterus coronatus
+Passeriforme,Parulidae,Myiothlypis,Myiothlypis coronata
 Passeriforme,Cardinalidae,Piranga,Piranga rubra
 Passeriforme,Hirundinidae,Orochelidon,Orochelidon murina
 Passeriforme,Fumaridae,Sinallaxys ,Synallaxis subpudica
-Passeriforme,Parulidae,Brasileuterus,Basileuterus nigrocristatus
+Passeriforme,Parulidae,Myiothlypis,Myiothlypis nigrocristata
 Passeriforme,Grallariidae,Grallaria,Grallaria ruficapilla
 Psittaciformes ,Psittacidae,Forpus,Forpus conspicillatus 
-Columbiformes,Columbidae,Patagioena,Patagioena fasciata
+Columbiformes,Columbidae,Patagioenas,Patagioenas fasciata
 Passeriforme,Tyrannidae,Mercocerculus,Mecocerculus leucophrys
 Passeriforme ,Emberizidae,Arremon,Arremon torquatus 
-Passeriforme ,Emberizidae,Atlapetes,Atlapetes pallidinuca 
+Passeriforme ,Emberizidae,Atlapetes,Atlapetes pallidinucha 
 Apodiformes,Trochilidae,Lesbia,Lesbia victoriae 
-Passeriforme,Tyrannidae,Elaenia,Elaenia frantzi
-Passeriforme,Thraupidae,Dubusia,Dubusia taenita 
+Passeriforme,Tyrannidae,Elaenia,Elaenia frantzii
+Passeriforme,Thraupidae,Dubusia,Dubusia taeniata
 Passeriforme,Rhinocryptidae,Scytalopus,Scytalopus griseicollis
-Apodiformes,Trochilidae,,Acestrura mulsant
+Apodiformes,Trochilidae,,Chaetocercus mulsant
 Falconiformes,Falconidae,,falco peregrinus
 ,Cathartidae,,Coragyps atratus
 Passeriforme ,Tyrannidae,Tyranus ,Tyrannus melancholicus 
 ,Tyrannidae,,Pyrocephalus rubinus 
-,Picidae,,Veniliornis fumigatus 
+,Picidae,,Leuconotopicus fumigatus
 ,Accipitridae,,Rupornis magnirostris 
 ,Accipitridae,,Buteo platypterus 
 ,Apodidae,,Streptoprocne zonaris 
 ,Cotingidae,,Ampelion rubrocristatus 
 ,Emberizidae,,Sicalis flaveola
 ,Emberizidae,,Sicalis luteola 
-,Fringilidae,,Sporagra spinescens
-,Trochilidae,,Eriocnemis vestitus 
+,Fringilidae,Spinus,Spinus spinescens
+,Trochilidae,,Eriocnemis vestita 
 ,Trochilidae,,Chaetocercus mulsant 
-,Parulidae,,Myoborus ornatus 
+,Parulidae,,Myioborus ornatus
 ,Icteridae,,Amblycercus holosericeus 
 ,Icteridae,,Icterus nigrogularis
 ,,,Catamenia analis 
-,,,Hemispingus superciliaris 
+,,,Thlypopsis superciliaris
 ,,,Myiodynastes luteiventris
