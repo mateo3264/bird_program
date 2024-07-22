@@ -42,7 +42,8 @@ class TkinterGUI(Presenter):
 
 
         self.label_bird_name.pack()
-        self.label_bird_name.pack_forget()
+        if self.check_if_learned_bird():
+            self.label_bird_name.pack_forget()
         self.button_show_bird_name.pack()
         self.label_consequence.pack()
         # self.image.pack()
@@ -86,9 +87,14 @@ class TkinterGUI(Presenter):
         self.label_consequence.config(text=message)
         self.entry.delete(0, 'end')
         self.entry.focus()
-            
-    def update_media(self): 
-        self.label_bird_name.pack_forget()       
+    
+    def check_if_learned_bird(self):
+         if self.tp.cur_bird in self.tp.learned_birds or self.tp.cur_bird in self.tp.seen_birds:
+            return True
+         return False     
+    def update_media(self):
+        if self.check_if_learned_bird():
+            self.label_bird_name.pack_forget()       
         self.label_bird_name.config(text=self.tp.text_stimulus[self.tp.cur_bird][self.tp.cur_bird_text_idx])
         self.get_image(self.tp.image_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])
         self.get_audio(self.tp.audio_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])

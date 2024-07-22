@@ -5,10 +5,16 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 import os
 from abc import ABC, abstractmethod
-from registers import write_data_downloaded
-from configurations import DIRNAME_BIRD_AUDIOS, DIRNAME_BIRD_IMAGES
+from registers import write_data_downloaded, write_to_json, read_json_file
+from configurations import DIRNAME_BIRD_AUDIOS, DIRNAME_BIRD_IMAGES, FILENAME_BIRD_TEXTS
 import wikipedia
 from formatters import format_name_for_save
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import pandas as pd
 
 def get_wikipedia_images(bird_name, bird_data_container):
     # Base URL for the Wikipedia API
@@ -110,11 +116,67 @@ def get_wikipedia_images(bird_name, bird_data_container):
     return bird_data_container
 
 
+# def get_bird_description(bird, verbose=False):
+#     if verbose:
+#         print('trying to get the description from wikipedia')
+#     response = requests.get('https://es.wikipedia.org/wiki/' + bird)
+
+#     text = response.text
+
+    
+#     soup = BeautifulSoup(text, 'html.parser')
+
+#     ps = soup.find_all('p')
+#     titles = soup.find_all('h2')
+#     description = None
+#     for t, p in zip(titles, ps):
+#         if 'Descripción' in t.text:
+#             description = p.text
+
+#     return description
+
+def get_bird_description(bird, language='es', verbose=False):
+    print(bird)
+    if verbose:
+        print(f'Trying to get the description for {bird} from Wikipedia in {language}')
+    
+    url = f'https://{language}.wikipedia.org/wiki/{bird}'
+    description_names = {
+        'es': ['Descripción', 'Características'],
+        'en': ['Description', 'Characteristics']
+    }
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        for desc_name in description_names.get(language, []):
+            description_tag = soup.find('span', {'id': desc_name})
+            if description_tag:
+                paragraphs = description_tag.find_all_next('p', limit=3)
+                if paragraphs:
+                    return ' '.join(p.text for p in paragraphs)
+        
+        raise ValueError("Couldn't find a description")
+    
+    except requests.RequestException as e:
+        print(f"Network error occurred: {e}")
+    except ValueError as e:
+        print(str(e))
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+    
+    
+    return None
+    
+
+
 class BirdDownloader(ABC):
-    def __init__(self, path):
+    def __init__(self, path=''):
         self.path = path
 
-        if not os.path.isdir(self.path):
+        if not os.path.isdir(self.path) and path != '':
             print('MAKING A FOLDER')
             os.mkdir(self.path)
         self.bird_data = {}
@@ -125,14 +187,15 @@ class BirdDownloader(ABC):
 
     def save_data(self, format):
         #print(f'file downloaders.py, line 127, self.bird_data {self.bird_data}')
-        for bird_name in self.bird_data:
-            print(f'file downloaders.py, line 129, bird_name {bird_name}')
-            for i, data_content in enumerate(self.bird_data[bird_name]):
-                filename = self.path + '\\' + bird_name + str(i) + '.' + format
-                with open(filename, 'wb') as f:
-                    print(filename)
-                    
-                    f.write(data_content)
+        if format == ('mp3', 'jpg'):
+            for bird_name in self.bird_data:
+                print(f'file downloaders.py, line 129, bird_name {bird_name}')
+                for i, data_content in enumerate(self.bird_data[bird_name]):
+                    filename = self.path + '\\' + bird_name + str(i) + '.' + format
+                    with open(filename, 'wb') as f:
+                        print(filename)
+                        
+                        f.write(data_content)
         
         if format == 'jpg':
             write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'image')
@@ -140,6 +203,8 @@ class BirdDownloader(ABC):
             print('bird_name: ', bird_name)
             print('self.bird_data: ', self.bird_data.keys())
             write_data_downloaded(bird_name, len(self.bird_data[bird_name]), 'audio')
+        elif format == 'text':
+            write_to_json(self.bird_data, FILENAME_BIRD_TEXTS)
 
 
 
@@ -233,11 +298,69 @@ class BirdImageDownloader(BirdDownloader):
             print('Trying in wikipedia')
             self.bird_data = get_wikipedia_images(original_bird, self.bird_data)
 
+#ToDo: text downloader
+class BirdTextDownloader(BirdDownloader):
+    def __init__(self, path):
+        super().__init__(path)
+        options = Options()
+        options.add_argument('--headless')
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        
+        self.url = 'https://ebird.org/species/{species_code}'
+        
+        self.df_ebird = pd.read_csv('ebird_taxonomy.csv')
+    
+    # ToDo: Check if already in birds_text.json
+    def get_data(self, bird, limit=None):
+        print(bird)
+        json_bird_text_file = read_json_file(FILENAME_BIRD_TEXTS)
+        # print('json_bird_text_file')
+        # print(json_bird_text_file)
+
+        if bird in json_bird_text_file:
+            print(f'bird: {bird} already downloaded')
+            return
+        try:
+            species_code = self.df_ebird[self.df_ebird['SCIENTIFIC_NAME'] == bird]['SPECIES_CODE'].values[0]
+        except IndexError:
+            print(f'{bird} not found in ebird taxonomy')
+            species_code = None
+        if species_code:
+
+            self.driver.get(self.url.format(species_code=species_code))     
+            self.driver.implicitly_wait(5)
+
+            description_paragraph = self.driver.find_element(By.CLASS_NAME, 'u-stack-sm')
+
+            if description_paragraph:
+                html = description_paragraph.get_attribute('innerHTML')
+                
+                if bird not in self.bird_data:
+                    self.bird_data[bird] = html
+        wikipedia_text = get_bird_description(bird, verbose=True)
+        if wikipedia_text is not None:
+            self.bird_data[bird] += wikipedia_text
+        print('DESCRIPTION COLLECTED:')
+        for bird in self.bird_data:
+            if self.bird_data[bird] != '':
+                print('some data was gotten')
+                #print(bird, ': ', self.bird_data[bird])
+        self.save_data(format='text')
+        
         
 
+        
+
+
 if __name__ == '__main__':
+    btd = BirdTextDownloader()
+    for bird in ['Myioborus ornatus', 'Ramphocelus dimidiatus', 'Pygochelidon cyanoleuca']:
+        btd.get_data(bird)
+    
     bad = BirdAudioDownloader(DIRNAME_BIRD_AUDIOS)
+    print('bird data from bad: ', bad.bird_data)
     bid = BirdImageDownloader(DIRNAME_BIRD_IMAGES)
+    print('bird data from bid: ', bid.bird_data)
     get_wikipedia_images('turdus fuscater', bid.bird_data)
 
     bad.get_data('turdus fuscater')

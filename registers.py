@@ -17,6 +17,12 @@ def read_json_file(filename):
         json_file = json.load(file)
         return json_file
 
+def write_to_json(json_data, filename):
+    with open(filename, 'w') as file:
+        json.dump(json_data, file)
+        return True
+    
+
 def read_bird_names():
     birds = []
 
