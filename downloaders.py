@@ -14,6 +14,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
 import pandas as pd
 
 def get_wikipedia_images(bird_name, bird_data_container):
@@ -187,8 +189,11 @@ class BirdDownloader(ABC):
 
     def save_data(self, format):
         #print(f'file downloaders.py, line 127, self.bird_data {self.bird_data}')
-        if format == ('mp3', 'jpg'):
+        print('self.bird_data.keys(): ', self.bird_data.keys())
+        if format in ('mp3', 'jpg'):
+            
             for bird_name in self.bird_data:
+                print('bird_name: ', bird_name)
                 print(f'file downloaders.py, line 129, bird_name {bird_name}')
                 for i, data_content in enumerate(self.bird_data[bird_name]):
                     filename = self.path + '\\' + bird_name + str(i) + '.' + format
@@ -210,6 +215,9 @@ class BirdDownloader(ABC):
 
 class BirdAudioDownloader(BirdDownloader):
     def get_data(self, bird, limit=5):
+        print(self.__class__.__name__)
+        print(bird)
+        print('GETTING AUDIO DATA...')
         bird_name = format_name_for_save(bird, '%20') #bird.lower().strip().replace(' ', '%20')
         url = 'https://xeno-canto.org/explore?query=' + bird_name
         
@@ -252,6 +260,9 @@ class BirdAudioDownloader(BirdDownloader):
 class BirdImageDownloader(BirdDownloader):
         
     def get_data(self, bird, show=False, limit=None):
+        print(self.__class__.__name__)
+        print(bird)
+        print('GETTING IMAGE DATA...')
         original_bird = bird
         #ToDo: Replace with format function 
         bird = format_name_for_save(bird) #bird.lower().strip().replace(' ', '-')
@@ -280,6 +291,7 @@ class BirdImageDownloader(BirdDownloader):
                     if bird not in self.bird_data:
                         self.bird_data[bird] = []
                     self.bird_data[bird].append(img_content)
+                    print('len(self.bird_data[bird]): ', len(self.bird_data[bird]))
                     image_counter += 1
                     if limit is not None:
                         if image_counter >= limit:
@@ -300,23 +312,34 @@ class BirdImageDownloader(BirdDownloader):
 
 #ToDo: text downloader
 class BirdTextDownloader(BirdDownloader):
-    def __init__(self, path):
+    def __init__(self, path=''):
         super().__init__(path)
-        options = Options()
-        options.add_argument('--headless')
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        # options = Options()
+        # options.add_argument('--headless')
+        # chrome_driver_manager = ChromeDriverManager()
+        # installed_cdm = chrome_driver_manager.install()
+        # service = Service(installed_cdm)
+        # self.driver = webdriver.Chrome(service=service, options=options)
         
+
+        options = webdriver.FirefoxOptions()
+        options.add_argument('--headless')
+        self.driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
         self.url = 'https://ebird.org/species/{species_code}'
         
         self.df_ebird = pd.read_csv('ebird_taxonomy.csv')
     
     # ToDo: Check if already in birds_text.json
+    # ToDo: only load json_bird_text_file one time. Currently
+    # it is being loaded for each bird.
     def get_data(self, bird, limit=None):
+        print(self.__class__.__name__)
         print(bird)
+        print('GETTING TEXT DATA...')
         json_bird_text_file = read_json_file(FILENAME_BIRD_TEXTS)
         # print('json_bird_text_file')
         # print(json_bird_text_file)
-
+        self.bird_data = json_bird_text_file
         if bird in json_bird_text_file:
             print(f'bird: {bird} already downloaded')
             return

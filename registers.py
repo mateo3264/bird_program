@@ -4,6 +4,7 @@ from formatters import format_name_for_save
 from configurations import (
     FILENAME_BIRD_AUDIOS, 
     FILENAME_BIRD_IMAGES,
+    FILENAME_BIRD_TEXTS,
     DIRNAME_BIRD_AUDIOS,
     DIRNAME_BIRD_IMAGES,
     ALL_BIRDS,
@@ -11,6 +12,7 @@ from configurations import (
     AUDIO
 )
 import csv
+
 
 def read_json_file(filename):
     with open(filename, 'r') as file:
@@ -61,30 +63,31 @@ def write_data_downloaded(bird_name, n_data_examples, data_type):
         json.dump(json_file, file)
 
 
-def delete_files(bird_name, data_type):
+def delete_files(bird_name):
     bird_name = format_name_for_save(bird_name)
     
-    if data_type == AUDIO: 
-        for f in os.listdir(DIRNAME_BIRD_AUDIOS):
-            if bird_name in f:                
-                os.remove(os.path.join(DIRNAME_BIRD_AUDIOS, f))
-        
-        os.remove(FILENAME_BIRD_AUDIOS)
+    #if data_type == AUDIO: 
+    for f in os.listdir(DIRNAME_BIRD_AUDIOS):
+        if bird_name in f:                
+            os.remove(os.path.join(DIRNAME_BIRD_AUDIOS, f))
+    
+    os.remove(FILENAME_BIRD_AUDIOS)
+    
+    #elif data_type == IMAGE: 
+    for f in os.listdir(DIRNAME_BIRD_IMAGES):
+        if bird_name in f: 
+            os.remove(os.path.join(DIRNAME_BIRD_IMAGES, f))
+    
+    os.remove(FILENAME_BIRD_IMAGES)
 
-    elif data_type == IMAGE: 
-        for f in os.listdir(DIRNAME_BIRD_IMAGES):
-            if bird_name in f: 
-                os.remove(os.path.join(DIRNAME_BIRD_IMAGES, f))
-        
-        os.remove(FILENAME_BIRD_IMAGES)
+    os.remove(FILENAME_BIRD_TEXTS)
+
+    
 
 
 if __name__ == '__main__':
-    for i, bird in enumerate(read_bird_names()):
-        print(i, bird)
-
-        if i == 5:
-            break
+    delete_files('zonotrichia capensis')
+    
 
 
     

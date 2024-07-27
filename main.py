@@ -4,7 +4,7 @@ from guis import TkinterGUI
 
 
 def main():
-    chosen_birds = get_birds_by_string_length(10, order='random')
+    chosen_birds = get_birds_by_string_length(3, order='random')
     tp = TkinterGUI(Retriever(chosen_birds, 'image-audio'))
     tp.present()
 
