@@ -3,6 +3,8 @@ from PIL import Image, ImageTk
 import numpy as np
 from presenters import Presenter, TkinterPresenter
 import pygame as pg
+from configurations import ALL, TEXT
+from llm_revision import get_score_from_llm
 
 class TkinterGUI(Presenter):
     def __init__(self, retriever):
@@ -39,7 +41,14 @@ class TkinterGUI(Presenter):
             )
         self.button = tk.Button(self.root, text='Send', command=self.get_entry)
 
-
+        self.top_level = tk.Toplevel(self.root)
+        # print('self.tp.text_descriptions[self.tp.cur_bird]')
+        # print(self.tp.text_descriptions[self.tp.cur_bird])
+        # print('self.tp.text_descriptions')
+        # print(self.tp.text_descriptions)
+        self.top_level_label = tk.Label(self.top_level, text=self.tp.text_descriptions[self.tp.cur_bird], font=('Courier', 20), width=60, wraplength=20*30)
+        self.top_level_entry = tk.Entry(self.top_level, font=('Courier', 20))
+        self.top_level_button = tk.Button(self.top_level, text='Enviar Descripción', command=self.update_toplevel_label)
 
         self.label_bird_name.pack()
         if self.check_if_learned_bird():
@@ -52,8 +61,22 @@ class TkinterGUI(Presenter):
         self.entry.focus()
         self.button.pack()
         self.button_food.pack()
+
+        if self.tp.retriever.how == ALL or self.tp.retriever.how == TEXT:
+            self.top_level_label.pack()
+            self.top_level_entry.pack()
+            self.top_level_entry.focus()
+            self.top_level_button.pack()
+            self.top_level.mainloop()
+            
         # self.root.withdraw()
-        self.root.mainloop()
+        else:
+            self.root.mainloop()
+    
+    def update_toplevel_label(self):
+        user_description = self.top_level_entry.get()
+        revision = get_score_from_llm(self.tp.text_descriptions, self.tp.cur_bird, user_description)
+        self.top_level_label.config(text=revision)
 
     def show_birds_name(self):
         self.label_bird_name.pack()
@@ -71,8 +94,8 @@ class TkinterGUI(Presenter):
         image_noise = np.clip(image_noise, 0, 255).astype(np.uint8)
         image = Image.fromarray(image_noise)
         # image = image + image_noise
-        width = int(1.5*image.width) if image.width < 500 else 600
-        height = int(1.5*image.height) if image.height < 500 else 600
+        width = int(1.2*image.width) if image.width < 500 else 600
+        height = int(1.2*image.height) if image.height < 500 else 600
         image = image.resize((width, height))
         self.image = ImageTk.PhotoImage(image)
 
@@ -98,7 +121,7 @@ class TkinterGUI(Presenter):
         self.label_bird_name.config(text=self.tp.text_stimulus[self.tp.cur_bird][self.tp.cur_bird_text_idx])
         self.get_image(self.tp.image_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])
         self.get_audio(self.tp.audio_filenames[self.tp.cur_bird][self.tp.cur_bird_image_idx])
-
+        self.update_toplevel_label()
 
     def get_entry(self):
             user_response = self.entry.get()

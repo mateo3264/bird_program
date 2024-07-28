@@ -12,3 +12,4 @@ IMAGE = 'image'
 AUDIO = 'audio'
 TEXT = 'text'
 IMAGE_AUDIO = 'image-audio'
+ALL = 'all' # image, audio, text

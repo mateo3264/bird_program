@@ -42,10 +42,13 @@ class TkinterPresenter:
         self.birds = self.retriever.birds#[bird for bird in self.image_filenames]
         self.seen_birds = []
         self.audio_filenames = self.retriever.get_audio_filenames()
+        self.text_filenames = self.retriever.get_text_filenames()
         print('self.birds: ', self.birds)
         print('image_filenames: ', self.image_filenames)
         print('audio_filenames: ', self.audio_filenames)
+        print('text_filenames: ', self.text_filenames)
         self.text_stimulus = self.retriever.get_text_stimulus() 
+        self.text_descriptions = self.text_filenames
         self.cur_bird_idx = 0
         self.cur_bird_image_idx = 0
         self.cur_bird = self.birds[self.cur_bird_idx]
@@ -74,7 +77,7 @@ class TkinterPresenter:
                 self.cur_bird_text_idx = 0
                 self.cur_bird = self.birds[self.cur_bird_idx]
                 self.cur_bird_text = self.text_stimulus[self.cur_bird][0]
-
+                
                 if self.cur_bird in self.seen_birds or self.cur_bird in self.learned_birds:
                     print('ENTERED self.cur_bird in self.seen_birds')
                     self.cur_bird_text_idx = -1

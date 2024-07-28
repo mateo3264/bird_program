@@ -4,7 +4,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import random
 from schedulers import get_birds_by_string_length
-from configurations import IMAGE, AUDIO, IMAGE_AUDIO
+from configurations import IMAGE, AUDIO, TEXT, IMAGE_AUDIO, ALL
 
 class Retriever:
     def __init__(self, birds, how):
@@ -18,8 +18,9 @@ class Retriever:
         self.audios = []
         self.how = how #'image-audio'
         print('self.how', self.how)
-        self.image_filenames = {bird:[] for bird in birds}
         self.audio_filenames = {bird:[] for bird in birds}
+        self.image_filenames = {bird:[] for bird in birds}
+        self.bird_texts = {bird:[] for bird in birds}
         
         self.text_stimulus = {bird:difuminate(bird, 2) for bird in birds}
         
@@ -33,19 +34,24 @@ class Retriever:
                     self.get_data_filenames(bird_name, IMAGE)
                 if self.how == AUDIO or self.how == IMAGE_AUDIO:
                     self.get_data_filenames(bird_name, AUDIO)
+                if self.how == TEXT or self.how == ALL:
+                    self.get_data_filenames(bird_name, TEXT)
         #self.url2obj()
         
         print(self.image_filenames)
 
     def get_data_filenames(self, bird_name, data_type):
         """Get the data by calling loaders.get_data()"""
-        if self.how == IMAGE or self.how == IMAGE_AUDIO:
+        if self.how == IMAGE or self.how == IMAGE_AUDIO or self.how == ALL:
             self.image_filenames[bird_name] = loaders.get_data(bird_name, IMAGE)
             print('image filenames key and value')
             print(bird_name, self.image_filenames[bird_name])
-        if self.how == AUDIO or self.how == IMAGE_AUDIO:
+        if self.how == AUDIO or self.how == IMAGE_AUDIO or self.how == ALL:
             print('RETRIEVER AUDIO')
             self.audio_filenames[bird_name] = loaders.get_data(bird_name, AUDIO)
+        if self.how == TEXT or self.how == ALL:
+            print('RETRIEVER TEXT')
+            self.bird_texts[bird_name] = loaders.get_data(bird_name, TEXT)
             #self.audio_filenames.extend(loaders.get_data(bird_name, AUDIO))
         
         return True
@@ -55,6 +61,9 @@ class Retriever:
     
     def get_audio_filenames(self):
         return self.audio_filenames
+    
+    def get_text_filenames(self):
+        return self.bird_texts
 
     def get_text_stimulus(self):
         return self.text_stimulus

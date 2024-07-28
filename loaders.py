@@ -6,6 +6,7 @@ from configurations import (
     DIRNAME_BIRD_AUDIOS,
     FILENAME_BIRD_IMAGES,
     FILENAME_BIRD_AUDIOS,
+    FILENAME_BIRD_TEXTS,
     IMAGE,
     AUDIO,
     TEXT
@@ -24,6 +25,10 @@ def get_from_downloaded(bird_name, data_type):
         pygame.mixer.init()
     elif data_type == IMAGE:
         dire = DIRNAME_BIRD_IMAGES
+    # elif data_type == TEXT:
+    #     file = FILENAME_BIRD_TEXTS
+    #     data = read_json_file(file)
+    #     return data
 
     for f in os.listdir(dire):
         full_path = os.path.join(dire, f)
@@ -83,11 +88,15 @@ def get_data(bird_name, data_type):
         
     elif data_type == AUDIO:
         json_file = read_json_file(FILENAME_BIRD_AUDIOS)
+    
+    elif data_type == TEXT:
+        json_file = read_json_file(FILENAME_BIRD_TEXTS)
+        return json_file[original_bird_name.strip()]
         
     print(f'file: loaders.py, json_file: {json_file}')
 
     if bird_name not in json_file:
-        download_and_save_data(original_bird_name)#, data_type)
+        download_and_save_data(original_bird_name.strip())#, data_type)
     
     data = get_from_downloaded(bird_name, data_type)
     
